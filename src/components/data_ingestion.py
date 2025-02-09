@@ -1,27 +1,61 @@
 import os
 import sys
+import pandas as pd
+import json
+import kaggle
+from sklearn.model_selection import train_test_split
+
+from pathlib import Path
+from environs import Env
+
 from src.exception import CustomException
 from src.logger import logging
-import pandas as pd
 from dataclasses import dataclass
+
+# Initialize environs
+env = Env()
+env.read_env()
 
 @dataclass
 class DataIngestionConfig:
-    train_data_path: str=os.path.join('artifacts','train.csv')
-    raw_data_path: str=os.path.join('artifacts','raw.csv')
+    artifacts_path: Path=Path("artifacts")
+    train_data_path: Path=artifacts_path / 'train.csv'
+    test_date_path: Path=artifacts_path / 'test.csv'
+    raw_data_path: Path=artifacts_path / 'netflix_titles.csv'
+    kaggle_dataset: str='anandshaw2001/netflix-movies-and-tv-shows'
+    kaggle_path: Path=Path.home() / '.kaggle'
+    config_path: Path=kaggle_path / 'kaggle.json'
+    username: str=env.str('KAGGLE_USERNAME')
+    key: str=env.str('KAGGLE_KEY')
 
 class DataIngestion:
     def __init__(self):
         self.ingestion_config=DataIngestionConfig()
 
+    def create_kaggle_credentials(self):
+        logging.info("Setting up Kaggle configuration")
+        self.ingestion_config.kaggle_path.mkdir(exist_ok=True)
+
+        config = {
+            'username': self.ingestion_config.username,
+            'key': self.ingestion_config.key
+        }
+
+        with open(self.ingestion_config.config_path, 'w') as f:
+            json.dump(config, f)
+
+        os.chmod(self.ingestion_config.config_path, 0o600)
+        logging.info(f"Secrets sucessfully stored in {self.ingestion_config.config_path}")
+
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion component")
         try:
-            df=pd.read_csv('data/netflix_titles.csv')
-            logging.info('Read dataset')
-
+            logging.info(f"Download dataset from Kaggle: {self.ingestion_config.kaggle_dataset}")
             os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path),exist_ok=True)
-            df.to_csv(self.ingestion_config.raw_data_path, index=False)
+            kaggle.api.dataset_download_files(self.ingestion_config.kaggle_dataset, path=self.ingestion_config.artifacts_path, unzip=True)
+            
+            logging.info("Read dataset")
+            df=pd.read_csv(self.ingestion_config.raw_data_path)
 
             # add train test split if neccesary
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
@@ -37,4 +71,5 @@ class DataIngestion:
 
 if __name__=="__main__":
     data_ingestor=DataIngestion()
+    data_ingestor.create_kaggle_credentials()
     data_ingestor.initiate_data_ingestion()
