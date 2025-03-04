@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 import json
 import kaggle
+import nltk
 from sklearn.model_selection import train_test_split
 
 from pathlib import Path
@@ -18,15 +19,15 @@ env.read_env()
 
 @dataclass
 class DataIngestionConfig:
-    artifacts_path: Path=Path("artifacts")
-    train_data_path: Path=artifacts_path / 'train.csv'
-    test_date_path: Path=artifacts_path / 'test.csv'
-    raw_data_path: Path=artifacts_path / 'netflix_titles.csv'
-    kaggle_dataset: str='anandshaw2001/netflix-movies-and-tv-shows'
-    kaggle_path: Path=Path.home() / '.kaggle'
-    config_path: Path=kaggle_path / 'kaggle.json'
-    username: str=env.str('KAGGLE_USERNAME')
-    key: str=env.str('KAGGLE_KEY')
+    artifacts_path: Path = Path("artifacts")
+    train_data_path: Path = artifacts_path / 'train.csv'
+    test_data_path: Path = artifacts_path / 'test.csv'
+    raw_data_path: Path = artifacts_path / 'netflix_titles.csv'
+    kaggle_dataset: str = 'anandshaw2001/netflix-movies-and-tv-shows'
+    kaggle_path: Path = Path.home() / '.kaggle'
+    config_path: Path = kaggle_path / 'kaggle.json'
+    username: str = env.str('KAGGLE_USERNAME')
+    key: str = env.str('KAGGLE_KEY')
 
 class DataIngestion:
     def __init__(self):
@@ -47,6 +48,11 @@ class DataIngestion:
         os.chmod(self.ingestion_config.config_path, 0o600)
         logging.info(f"Secrets sucessfully stored in {self.ingestion_config.config_path}")
 
+    def download_nltk_datasets(self):
+        logging.info("Downloading necessary NLTK datasets")
+        nltk.download('stopwords')
+        nltk.download('punkt')
+
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion component")
         try:
@@ -57,13 +63,17 @@ class DataIngestion:
             logging.info("Read dataset")
             df=pd.read_csv(self.ingestion_config.raw_data_path)
 
-            # add train test split if neccesary
+            logging.info("Train test split initiated")
+            train_set, test_set = train_test_split(df, test_size=0.2, random_state=7)
+
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
-            df.to_csv(self.ingestion_config.train_data_path, index=False)
+            train_set.to_csv(self.ingestion_config.train_data_path, index=False)
+            test_set.to_csv(self.ingestion_config.test_data_path, index=False)
 
             logging.info("Data ingestion completed")
             return(
                 self.ingestion_config.train_data_path,
+                self.ingestion_config.test_data_path,
                 self.ingestion_config.raw_data_path
             )
         except Exception as e:
@@ -72,4 +82,5 @@ class DataIngestion:
 if __name__=="__main__":
     data_ingestor=DataIngestion()
     data_ingestor.create_kaggle_credentials()
+    data_ingestor.download_nltk_datasets()
     data_ingestor.initiate_data_ingestion()
