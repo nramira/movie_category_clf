@@ -4,14 +4,17 @@ import pandas as pd
 import json
 import kaggle
 import nltk
-from sklearn.model_selection import train_test_split
-
 from pathlib import Path
 from environs import Env
+from sklearn.model_selection import train_test_split
+from dataclasses import dataclass
 
 from src.exception import CustomException
 from src.logger import logging
-from dataclasses import dataclass
+
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
+
 
 # Initialize environs
 env = Env()
@@ -73,14 +76,16 @@ class DataIngestion:
             logging.info("Data ingestion completed")
             return(
                 self.ingestion_config.train_data_path,
-                self.ingestion_config.test_data_path,
-                self.ingestion_config.raw_data_path
+                self.ingestion_config.test_data_path
             )
         except Exception as e:
             raise CustomException(e,sys)
 
 if __name__=="__main__":
-    data_ingestor=DataIngestion()
+    data_ingestor = DataIngestion()
     data_ingestor.create_kaggle_credentials()
     data_ingestor.download_nltk_datasets()
-    data_ingestor.initiate_data_ingestion()
+    train_path, test_path = data_ingestor.initiate_data_ingestion()
+
+    data_transformation = DataTransformation()
+    data_transformation.initiate_data_transformation(train_path, test_path)
