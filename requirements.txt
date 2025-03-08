@@ -3,6 +3,9 @@ numpy
 seaborn
 matplotlib
 scikit-learn
+nltk
 kaggle
 environs
+ipykernel
+dill
 # -e .
