@@ -1,12 +1,13 @@
 import os
-import sys
 import re
-import numpy as np
-import pandas as pd
-import dill
+import sys
 
+import dill
+import numpy as np
 from nltk.corpus import stopwords
+
 from src.exception import CustomException
+
 
 def save_object(file_path, obj) -> None:
     try:
@@ -18,19 +19,20 @@ def save_object(file_path, obj) -> None:
 
     except Exception as e:
         raise CustomException(e, sys)
-    
-def clean_text(texts:np.ndarray) -> list:
+
+
+def clean_text(texts: np.ndarray) -> list:
     try:
-        stop_words = stopwords.words('english')
+        stop_words = stopwords.words("english")
         cleaned_texts = []
         for features in texts:
-            text = ' '.join(features)
-            text = re.sub(r'[^a-zA-Z\s]', '', text.lower()) # remove special characters 
+            text = " ".join(features)
+            text = re.sub(r"[^a-zA-Z\s]", "", text.lower())  # remove special characters
             words = text.split()
-            words = [word for word in words if word not in stop_words] # remove stop words
-            cleaned_texts.append(' '.join(words))
+            words = [word for word in words if word not in stop_words]  # remove stop words
+            cleaned_texts.append(" ".join(words))
 
         return cleaned_texts
-    
+
     except Exception as e:
         raise CustomException(e, sys)
