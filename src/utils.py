@@ -10,6 +10,20 @@ from sklearn.metrics import hamming_loss, jaccard_score
 from src.exception import CustomException
 
 
+def group_categories(genre_groups: dict, categories: list) -> list:
+    grouped_cats = []
+    for cat in categories:
+        mapped = False
+        for group, members in genre_groups.items():
+            if cat in members:
+                grouped_cats.append(group)
+                mapped = True
+                break
+        if not mapped:
+            grouped_cats.append("other")  # Fallback for any unmapped categories
+    return list(set(grouped_cats))
+
+
 def save_object(file_path, obj) -> None:
     try:
         dir_path = os.path.dirname(file_path)
@@ -29,10 +43,10 @@ def clean_text(texts: np.ndarray) -> list:
 
         for features in texts:
             text = " ".join(features)
-            text = re.sub(r"[^a-zA-Z\s]", "", text.lower())  # remove special characters
-            words = text.split()
-            words = [word for word in words if word not in stop_words]  # remove stop words
-            cleaned_texts.append(" ".join(words))
+            clean_text = re.sub(r"[^a-zA-Z\s]", "", text.lower())  # remove special characters
+            words = clean_text.split()
+            non_stop_words = [word for word in words if word not in stop_words]  # remove stop words
+            cleaned_texts.append(" ".join(non_stop_words))
 
         return cleaned_texts
 
