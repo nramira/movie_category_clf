@@ -151,12 +151,12 @@ class DataTransformation:
             target_train_df = (
                 train_df[self.data_transformation_config.target_column]
                 .str.split(", ")
-                .apply(lambda x: group_categories(x, self.data_transformation_config.genre_groups))
+                .apply(lambda x: group_categories(self.data_transformation_config.genre_groups, x))
             )
             target_test_df = (
                 test_df[self.data_transformation_config.target_column]
                 .str.split(", ")
-                .apply(lambda x: group_categories(x, self.data_transformation_config.genre_groups))
+                .apply(lambda x: group_categories(self.data_transformation_config.genre_groups, x))
             )
 
             logging.info("Features and targets extracted")
