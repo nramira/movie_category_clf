@@ -11,6 +11,7 @@ from environs import Env
 from sklearn.model_selection import train_test_split
 
 from src.components.data_transformation import DataTransformation
+from src.components.model_trainer import ModelTrainer
 from src.exception import CustomException
 from src.logger import logging
 
@@ -33,10 +34,13 @@ class DataIngestionConfig:
 
 
 class DataIngestion:
-    def __init__(self):
+    def __init__(self) -> None:
         self.ingestion_config = DataIngestionConfig()
 
-    def create_kaggle_credentials(self):
+    def create_kaggle_credentials(self) -> None:
+        """
+        Creates kaggle.json file using secrets saved as environtment variables
+        """
         logging.info("Setting up Kaggle configuration")
         self.ingestion_config.kaggle_path.mkdir(exist_ok=True)
 
@@ -51,12 +55,15 @@ class DataIngestion:
         os.chmod(self.ingestion_config.config_path, 0o600)
         logging.info(f"Secrets sucessfully stored in {self.ingestion_config.config_path}")
 
-    def download_nltk_datasets(self):
+    def download_nltk_datasets(self) -> None:
+        """
+        Downloads the stopwords and punks datasets from the NLTK library
+        """
         logging.info("Downloading necessary NLTK datasets")
         nltk.download("stopwords")
         nltk.download("punkt")
 
-    def initiate_data_ingestion(self):
+    def initiate_data_ingestion(self) -> tuple[Path, Path]:
         logging.info("Entered the data ingestion component")
         try:
             logging.info(f"Download dataset from Kaggle: {self.ingestion_config.kaggle_dataset}")
@@ -93,4 +100,7 @@ if __name__ == "__main__":
     train_path, test_path = data_ingestor.initiate_data_ingestion()
 
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_path, test_path)
+    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_path, test_path)
+
+    model_trainer = ModelTrainer()
+    print(model_trainer.initiate_model_trainer(train_arr, test_arr))
