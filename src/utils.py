@@ -10,32 +10,6 @@ from sklearn.metrics import hamming_loss, jaccard_score
 from src.exception import CustomException
 
 
-def group_categories(genre_groups: dict, categories: list) -> list:
-    grouped_cats = []
-    for cat in categories:
-        mapped = False
-        for group, members in genre_groups.items():
-            if cat in members:
-                grouped_cats.append(group)
-                mapped = True
-                break
-        if not mapped:
-            grouped_cats.append("other")  # Fallback for any unmapped categories
-    return list(set(grouped_cats))
-
-
-def save_object(file_path, obj) -> None:
-    try:
-        dir_path = os.path.dirname(file_path)
-        os.makedirs(dir_path, exist_ok=True)
-
-        with open(file_path, "wb") as file_obj:
-            dill.dump(obj, file_obj)
-
-    except Exception as e:
-        raise CustomException(e, sys)
-
-
 def clean_text(texts: np.ndarray) -> list:
     try:
         stop_words = stopwords.words("english")
@@ -49,6 +23,36 @@ def clean_text(texts: np.ndarray) -> list:
             cleaned_texts.append(" ".join(non_stop_words))
 
         return cleaned_texts
+
+    except Exception as e:
+        raise CustomException(e, sys)
+
+
+def group_categories(genre_groups: dict, categories: list) -> list:
+    try:
+        grouped_cats = []
+        for cat in categories:
+            mapped = False
+            for group, members in genre_groups.items():
+                if cat in members:
+                    grouped_cats.append(group)
+                    mapped = True
+                    break
+            if not mapped:
+                grouped_cats.append("other")  # Fallback for any unmapped categories
+        return list(set(grouped_cats))
+
+    except Exception as e:
+        raise CustomException(e, sys)
+
+
+def save_object(file_path, obj) -> None:
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+
+        with open(file_path, "wb") as file_obj:
+            dill.dump(obj, file_obj)
 
     except Exception as e:
         raise CustomException(e, sys)
