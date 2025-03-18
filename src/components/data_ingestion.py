@@ -20,7 +20,7 @@ env = Env()
 env.read_env()
 
 
-@dataclass
+@dataclass(frozen=True)
 class DataIngestionConfig:
     artifacts_path: Path = Path("artifacts")
     train_data_path: Path = artifacts_path / "train.csv"
