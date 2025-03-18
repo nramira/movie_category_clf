@@ -137,17 +137,14 @@ class DataTransformation:
         """
         try:
             logging.info("Starting data transformation process")
-
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
-
             logging.info(f"Train dataset shape: {train_df.shape}, Test dataset shape: {test_df.shape}")
 
-            # Extract features
+            logging.info("Extracting features and targets")
             features_train_df = train_df[self.data_transformation_config.feature_columns]
             features_test_df = test_df[self.data_transformation_config.feature_columns]
 
-            # Extract targets and group categories
             target_train_df = (
                 train_df[self.data_transformation_config.target_column]
                 .str.split(", ")
@@ -158,8 +155,6 @@ class DataTransformation:
                 .str.split(", ")
                 .apply(lambda x: group_categories(self.data_transformation_config.genre_groups, x))
             )
-
-            logging.info("Features and targets extracted")
 
             logging.info("Obtaining preprocessing object")
             preprocessing_obj = self.get_data_transformer_object()
