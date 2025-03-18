@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict
 
+import xgboost as xgb
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.multioutput import MultiOutputClassifier
@@ -20,6 +21,7 @@ class ModelTrainerConfig:
     trained_model_file_path: Path = Path("artifacts") / "model.pkl"
     models: Dict[str, MultiOutputClassifier] = field(
         default_factory=lambda: {
+            "XGBoost": MultiOutputClassifier(xgb.XGBClassifier()),
             "Multi Layer Perceptron": MultiOutputClassifier(MLPClassifier()),
             "Random Forest": MultiOutputClassifier(RandomForestClassifier()),
             "Extra Trees": MultiOutputClassifier(ExtraTreesClassifier()),
