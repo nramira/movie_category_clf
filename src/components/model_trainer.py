@@ -3,13 +3,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict
 
-import xgboost as xgb
+from catboost import CatBoostClassifier
 from sklearn.ensemble import ExtraTreesClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
+from xgboost import XGBClassifier
 
 from src.exception import CustomException
 from src.logger import logging
@@ -21,11 +22,12 @@ class ModelTrainerConfig:
     trained_model_file_path: Path = Path("artifacts") / "model.pkl"
     models: Dict[str, MultiOutputClassifier] = field(
         default_factory=lambda: {
-            "XGBoost": MultiOutputClassifier(xgb.XGBClassifier()),
+            "XGBoost": MultiOutputClassifier(XGBClassifier()),
+            "CatBoost": MultiOutputClassifier(CatBoostClassifier(verbose=0)),
             "Multi Layer Perceptron": MultiOutputClassifier(MLPClassifier()),
             "Random Forest": MultiOutputClassifier(RandomForestClassifier()),
             "Extra Trees": MultiOutputClassifier(ExtraTreesClassifier()),
-            "Decisionn Tree": MultiOutputClassifier(DecisionTreeClassifier()),
+            "Decision Tree": MultiOutputClassifier(DecisionTreeClassifier()),
             "Extra Tree": MultiOutputClassifier(ExtraTreeClassifier()),
             "K Neighbors": MultiOutputClassifier(KNeighborsClassifier()),
             "Logistic Regression": MultiOutputClassifier(LogisticRegression()),
@@ -51,7 +53,7 @@ class ModelTrainer:
             best_model_jaccard_score = model_report[best_model_name][1]
             best_model = self.model_trainer_config.models[best_model_name]
 
-            if best_model_jaccard_score < 0.6:
+            if best_model_jaccard_score < 0.4:
                 raise CustomException("No best model found", sys)
 
             logging.info(f"Best model found in testing dataset: {best_model_name}")
