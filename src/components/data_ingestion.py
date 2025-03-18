@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -28,7 +27,7 @@ class DataIngestionConfig:
     raw_data_path: Path = artifacts_path / "netflix_titles.csv"
     kaggle_dataset: str = "anandshaw2001/netflix-movies-and-tv-shows"
     kaggle_path: Path = Path.home() / ".kaggle"
-    config_path: Path = kaggle_path / "kaggle.json"
+    kaggle_config_path: Path = kaggle_path / "kaggle.json"
     username: str = env.str("KAGGLE_USERNAME")
     key: str = env.str("KAGGLE_KEY")
 
@@ -49,11 +48,11 @@ class DataIngestion:
             "key": self.ingestion_config.key,
         }
 
-        with open(self.ingestion_config.config_path, "w") as f:
+        with open(self.ingestion_config.kaggle_config_path, "w") as f:
             json.dump(config, f)
 
-        os.chmod(self.ingestion_config.config_path, 0o600)
-        logging.info(f"Secrets sucessfully stored in {self.ingestion_config.config_path}")
+        Path.chmod(self.ingestion_config.kaggle_config_path, 0o600)
+        logging.info(f"Secrets sucessfully stored in {self.ingestion_config.kaggle_config_path}")
 
     def download_nltk_datasets(self) -> None:
         """
@@ -66,8 +65,9 @@ class DataIngestion:
     def initiate_data_ingestion(self) -> tuple[Path, Path]:
         logging.info("Entered the data ingestion component")
         try:
+            logging.info(f"Create {self.ingestion_config.artifacts_path} directory")
+
             logging.info(f"Download dataset from Kaggle: {self.ingestion_config.kaggle_dataset}")
-            os.makedirs(os.path.dirname(self.ingestion_config.raw_data_path), exist_ok=True)
             kaggle.api.dataset_download_files(
                 self.ingestion_config.kaggle_dataset,
                 path=self.ingestion_config.artifacts_path,
@@ -80,7 +80,7 @@ class DataIngestion:
             logging.info("Train test split initiated")
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=7)
 
-            os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
+            logging.info(f"Save train and test files in {self.ingestion_config.artifacts_path}")
             train_set.to_csv(self.ingestion_config.train_data_path, index=False)
             test_set.to_csv(self.ingestion_config.test_data_path, index=False)
 
