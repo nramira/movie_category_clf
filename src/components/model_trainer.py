@@ -80,7 +80,9 @@ class ModelTrainer:
             X_test, y_test = test_arr
 
             logging.info("Evaluating each model")
-            model_report: dict = evaluate_models(X_train, y_train, X_test, y_test, self.model_trainer_config.models)
+            model_report: dict = evaluate_models(
+                X_train, y_train, X_test, y_test, self.model_trainer_config.models, self.model_trainer_config.params
+            )
 
             logging.info("Selecting model with best jaccard_score")
             best_model_name = sorted(model_report, key=lambda k: model_report[k]["jaccard_score"])[-1]
