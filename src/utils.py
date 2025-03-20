@@ -18,9 +18,9 @@ def clean_text(texts: np.ndarray) -> list:
 
         for features in texts:
             text = " ".join(features)
-            clean_text = re.sub(r"[^a-zA-Z\s]", "", text.lower())  # remove special characters
+            clean_text = re.sub(r"[^a-zA-Z\s]", "", text.lower())  # Remove special characters
             words = clean_text.split()
-            non_stop_words = [word for word in words if word not in stop_words]  # remove stop words
+            non_stop_words = [word for word in words if word not in stop_words]  # Remove stop words
             cleaned_texts.append(" ".join(non_stop_words))
 
         return cleaned_texts
@@ -54,6 +54,15 @@ def save_object(file_path, obj) -> None:
 
         with open(file_path, "wb") as file_obj:
             dill.dump(obj, file_obj)
+
+    except Exception as e:
+        raise CustomException(e, sys)
+
+
+def load_object(file_path) -> None:
+    try:
+        with open(file_path, "rb") as file_obj:
+            return dill.load(file_obj)
 
     except Exception as e:
         raise CustomException(e, sys)
