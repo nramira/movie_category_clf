@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies and TV Category Prediction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #212529;
+            padding: 20px;
+        }
+        
+        .prediction-container {
+            max-width: 650px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .page-title {
+            color: #0d6efd;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            padding: 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            padding: 12px 24px;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            border-color: #0a58ca;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prediction-result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .prediction-result h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0;
+            color: #495057;
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <div class="prediction-container">
+        <h1 class="page-title">Movies and TV Category Prediction</h1>
+        
+        <form action="{{ url_for('predict_datapoint')}}" method="post">
+            <div class="mb-4">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-control" name="description" placeholder="Enter your description" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Director</label>
+                <input type="text" class="form-control" name="director" placeholder="Enter director name" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Cast</label>
+                <input type="text" class="form-control" name="cast" placeholder="Enter cast members" required>
+            </div>
+            
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Predict Categories</button>
+            </div>
+        </form>
+        
+        <div class="prediction-result">
+            <h2>Prediction: <span class="result-value">{{results}}</span></h2>
+        </div>
+    </div>
+</body>
+</html>
