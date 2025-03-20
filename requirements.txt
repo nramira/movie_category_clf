@@ -10,4 +10,5 @@ kaggle
 environs
 ipykernel
 dill
+flask
 # -e .
