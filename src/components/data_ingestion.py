@@ -60,7 +60,6 @@ class DataIngestion:
         """
         logging.info("Downloading necessary NLTK datasets")
         nltk.download("stopwords")
-        nltk.download("punkt")
 
     def initiate_data_ingestion(self) -> tuple[Path, Path]:
         logging.info("Entered the data ingestion component")
