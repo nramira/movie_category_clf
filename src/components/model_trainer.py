@@ -93,6 +93,7 @@ class ModelTrainer:
                 raise CustomException("No best model found", sys)
 
             logging.info(f"Best model found in testing dataset: {best_model_name}")
+            logging.info(f"Best model jaccard score: {best_model_jaccard_score}")
 
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
