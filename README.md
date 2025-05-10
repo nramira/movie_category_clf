@@ -10,9 +10,10 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 
 - Uses a **multilabel classification model**
 - Based on metadata from Netflix (via Kaggle)
-- Modular ML pipeline implemented with clear structure (`src/`)
+- Modular ML pipeline
 - Text feature extraction using **TF-IDF**
 - Model experimentation with multiple classifiers
+- Hyperparameter tuning using cross validation
 - Deployed via a **Flask** web app for inference
 
 ---
