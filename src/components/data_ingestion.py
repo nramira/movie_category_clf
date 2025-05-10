@@ -9,8 +9,6 @@ import pandas as pd
 from environs import Env
 from sklearn.model_selection import train_test_split
 
-from src.components.data_transformation import DataTransformation
-from src.components.model_trainer import ModelTrainer
 from src.exception import CustomException
 from src.logger import logging
 
@@ -92,14 +90,11 @@ class DataIngestion:
             raise CustomException(e, sys)
 
 
+# For local testing purposes only
 if __name__ == "__main__":
     data_ingestor = DataIngestion()
     data_ingestor.create_kaggle_credentials()
     data_ingestor.download_nltk_datasets()
     train_path, test_path = data_ingestor.initiate_data_ingestion()
-
-    data_transformation = DataTransformation()
-    train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_path, test_path)
-
-    model_trainer = ModelTrainer()
-    print(model_trainer.initiate_model_trainer(train_arr, test_arr))
+    print(f"Train data path: {train_path}")
+    print(f"Test data path: {test_path}")
