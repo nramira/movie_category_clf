@@ -68,7 +68,7 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 - Implemented in `data_ingestion.py`
 - Connects to the **Kaggle API** to download the Netflix dataset automatically
 - Splits the dataset into train and test CSVs
-- Handles missing values and stores raw data in the `artifacts/` directory
+- Stores raw data in the `artifacts/` directory
 
 ### 🧹 Data Transformation
 
@@ -96,7 +96,6 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 - Located in `app.py`
 - Accepts user input for `description`, `cast`, and `director`
 - Returns predicted genres via web UI
-- Templates: `index.html` for input, `home.html` for results
 
 ---
 
@@ -126,4 +125,4 @@ python app.py
 ---
 
 ## 🧪 Results
-The training pipeline prints evaluation metrics such as Hamming Loss and Macro F1-score. The best-performing model is persisted and used by the Flask app for predictions.
+The training pipeline prints evaluation metrics such as Hamming Loss and Jaccard Score. The best-performing model is persisted and used by the Flask app for predictions.
