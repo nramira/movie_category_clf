@@ -19,7 +19,7 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 
 ## 📁 Project Structure
 
-.
+```bash
 ├── app.py # Flask application for inference
 ├── requirements.txt # Dependencies
 ├── setup.py # Package setup
@@ -51,3 +51,4 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 │ ├── init.py
 │ ├── train_pipeline.py
 │ └── predict_pipeline.py
+```
