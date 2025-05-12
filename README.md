@@ -64,23 +64,23 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 
 ## 🧠 ML Pipeline
 
-### 🔌 Data Ingestion
+### Data Ingestion
 
 - Implemented in `data_ingestion.py`
 - Connects to the **Kaggle API** to download the Netflix dataset automatically
 - Splits the dataset into train and test CSVs
 - Stores raw data in the `artifacts/` directory
 
-### 🧹 Data Transformation
+### Data Transformation
 
 - Implemented in `data_transformation.py`
 - Handles missing values, normalizes text and removes stop words
 - Combines `description`, `cast`, and `director` into a single textual feature
 - Uses `TfidfVectorizer` to transform text into numerical features
 - Applies a multilabel binarizer to the target column
-- Stores a preprocessing object to `preprocessor.pkl` for inference
+- Saves a preprocessing object to `preprocessor.pkl` for inference
 
-### 🤖 Model Training
+### Model Training
 
 - Implemented in `model_trainer.py`
 - Trains and evaluates multiple **MultiOutputClassifier** models:
@@ -104,8 +104,8 @@ This project demonstrates a full machine learning lifecycle, from data ingestion
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/movie-categories-clf.git
-cd movie-categories-clf
+git clone https://github.com/nramira/movie_category_clf.git
+cd movie_category_clf
 
 # Set up virtual environment
 python -m venv venv
